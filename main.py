@@ -10,14 +10,14 @@ import supervision as sv
 import torch
 import torchvision
 
-from common import create_classes, calculate_iou, bbox_check, blur_detections
+from autoware_rosbag2_anonymizer.common import create_classes, calculate_iou, bbox_check, blur_detections
 
-from rosbag_io.rosbag_reader import RosbagReader
-from rosbag_io.rosbag_writer import RosbagWriter
+from autoware_rosbag2_anonymizer.rosbag_io.rosbag_reader import RosbagReader
+from autoware_rosbag2_anonymizer.rosbag_io.rosbag_writer import RosbagWriter
 
-from model.open_clip import OpenClipModel
-from model.grounding_dino import GroundingDINO
-from model.sam import SAM
+from autoware_rosbag2_anonymizer.model.open_clip import OpenClipModel
+from autoware_rosbag2_anonymizer.model.grounding_dino import GroundingDINO
+from autoware_rosbag2_anonymizer.model.sam import SAM
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

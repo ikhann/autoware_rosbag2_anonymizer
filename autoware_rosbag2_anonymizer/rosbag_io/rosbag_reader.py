@@ -5,7 +5,7 @@ from rclpy.serialization import deserialize_message
 from rosidl_runtime_py.utilities import get_message
 from sensor_msgs.msg import CompressedImage, Image
 
-from rosbag_io.rosbag_common import get_rosbag_options, wait_for, RosMessage
+from autoware_rosbag2_anonymizer.rosbag_io.rosbag_common import get_rosbag_options, wait_for, RosMessage
 
 
 class RosbagReader:

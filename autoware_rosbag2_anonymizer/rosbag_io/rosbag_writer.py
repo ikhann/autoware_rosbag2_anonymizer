@@ -4,7 +4,7 @@ from rclpy.serialization import serialize_message
 from cv_bridge import CvBridge
 import cv2 as cv
 
-from rosbag_io.rosbag_common import get_rosbag_options, create_topic
+from autoware_rosbag2_anonymizer.rosbag_io.rosbag_common import get_rosbag_options, create_topic
 
 
 class RosbagWriter:
