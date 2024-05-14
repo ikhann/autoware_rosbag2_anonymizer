@@ -1,0 +1,17 @@
+GroundingDINO_SwinB.cfg.py
+groundingdino_swinb_cogcoor.pth
+sam_vit_h_4b8939.pth
+yolov8n.pt
+yolov8x.pt
+
+dataset/
+
+runs/
+build/
+autoware_rosbag2_anonymizer.egg-info
+*__pycache__
+
+.vscode/
+*.code-workspace
+
+.idea/

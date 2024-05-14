@@ -2,6 +2,19 @@ from typing import List, Tuple, Dict
 
 import cv2
 
+import os
+
+
+def get_file_paths(root_folder: str, extensions: List[str]):
+    file_paths = []
+    for root, dirs, files in os.walk(root_folder):
+        for file in files:
+            for ext in extensions:
+                if file.endswith(ext):
+                    file_paths.append(os.path.join(root, file))
+                    break
+    return file_paths
+
 
 def create_classes(json_data) -> Tuple[List[str], List[str], Dict]:
     detection_classes = []

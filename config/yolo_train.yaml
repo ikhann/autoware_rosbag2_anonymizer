@@ -1,0 +1,5 @@
+dataset:
+  input_dataset_yaml: '/home/bzeren/Downloads/dataset/data.yaml'
+yolo:
+  epochs: 100
+  model: 'yolov8x.pt'

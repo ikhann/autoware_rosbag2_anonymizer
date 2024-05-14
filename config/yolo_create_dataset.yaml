@@ -1,0 +1,20 @@
+rosbag:
+  input_bags_folder: '/media/bzeren/PortableSSD/YTU-DATA/rosbag2-anonymizer'
+dataset:
+  output_dataset_folder: '/media/bzeren/PortableSSD/YTU-DATA/rosbag2-anonymizer/dataset'
+  output_dataset_subsample_coefficint: 25
+grounding_dino:
+  config_path: './GroundingDINO_SwinB.cfg.py'
+  checkpoint_path: './groundingdino_swinb_cogcoor.pth'
+  box_threshold: 0.1
+  text_threshold: 0.1
+  nms_threshold: 0.1
+segment_anything:
+  encoder_version: 'vit_h'
+  checkpoint_path: './sam_vit_h_4b8939.pth'
+openclip:
+  model_name: 'ViT-B-32'
+  pretrained_model: 'laion2b_s34b_b79k'
+  score_threshold: 0.7
+bbox_validation:
+  iou_threshold: 0.9

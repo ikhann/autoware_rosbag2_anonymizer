@@ -5,11 +5,15 @@ from rclpy.serialization import deserialize_message
 from rosidl_runtime_py.utilities import get_message
 from sensor_msgs.msg import CompressedImage, Image
 
-from autoware_rosbag2_anonymizer.rosbag_io.rosbag_common import get_rosbag_options, wait_for, RosMessage
+from autoware_rosbag2_anonymizer.rosbag_io.rosbag_common import (
+    get_rosbag_options,
+    wait_for,
+    RosMessage,
+)
 
 
 class RosbagReader:
-    def __init__(self, bag_path) -> None:
+    def __init__(self, bag_path, subsample_coefficient) -> None:
         self.bag_path = bag_path
         self.storage_id = "mcap" if bag_path.endswith(".mcap") else "sqlite3"
 
@@ -21,6 +25,9 @@ class RosbagReader:
 
         self.type_map = self.create_type_map()
 
+        self.subsample_coefficient = subsample_coefficient
+        self.subsample_dict = {}
+
     def __dell__(self):
         self.reader.close()
 
@@ -31,6 +38,13 @@ class RosbagReader:
         if self.reader.has_next():
             (topic, data, t) = self.reader.read_next()
             if self.type_map[topic] == "sensor_msgs/msg/CompressedImage":
+                if topic not in self.subsample_dict:
+                    self.subsample_dict[topic] = 0
+                else:
+                    if self.subsample_dict[topic] % self.subsample_coefficient != 0:
+                        self.subsample_dict[topic] += 1
+                        return self.__next__()
+                self.subsample_dict[topic] += 1
                 return (
                     RosMessage(
                         topic,
@@ -41,6 +55,13 @@ class RosbagReader:
                     True,
                 )
             elif self.type_map[topic] == "sensor_msgs/msg/Image":
+                if topic not in self.subsample_dict:
+                    self.subsample_dict[topic] = 0
+                else:
+                    if self.subsample_dict[topic] % self.subsample_coefficient != 0:
+                        self.subsample_dict[topic] += 1
+                        return self.__next__()
+                self.subsample_dict[topic] += 1
                 return (
                     RosMessage(
                         topic,

@@ -7,7 +7,7 @@
         },
         {
             "prompt": "human face",
-            "should_inside": ["person"],
+            "should_inside": ["person", "human body"],
             "should_not_inside": []
         }
     ]
