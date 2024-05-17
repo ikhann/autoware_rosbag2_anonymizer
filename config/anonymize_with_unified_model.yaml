@@ -23,5 +23,5 @@ yolo:
 bbox_validation:
   iou_threshold: 0.9
 blur:
-  kernel_size: 21
-  sigma_x: 9
+  kernel_size: 31
+  sigma_x: 11

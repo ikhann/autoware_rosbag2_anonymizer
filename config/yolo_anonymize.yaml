@@ -11,5 +11,5 @@ segment_anything:
   encoder_version: 'vit_h'
   checkpoint_path: './sam_vit_h_4b8939.pth'
 blur:
-  kernel_size: 21
+  kernel_size: 31
   sigma_x: 9
