@@ -11,9 +11,11 @@ import numpy as np
 from autoware_rosbag2_anonymizer.model.open_clip import OpenClipModel
 from autoware_rosbag2_anonymizer.model.grounding_dino import GroundingDINO
 from autoware_rosbag2_anonymizer.model.sam import SAM
+from autoware_rosbag2_anonymizer.model.yolov8 import Yolov8
 
 from autoware_rosbag2_anonymizer.common import (
     create_classes,
+    create_yolo_classes,
     bbox_check,
 )
 
@@ -42,6 +44,10 @@ class UnifiedLanguageModel:
         self.openclip_pretrained_model = config["openclip"]["pretrained_model"]
         self.openclip_score_threshold = config["openclip"]["score_threshold"]
 
+        self.yolo_model_name = config["yolo"]["model"]
+        self.yolo_confidence = config["yolo"]["confidence"]
+        self.yolo_config_path = config["yolo"]["config_path"]
+
         self.iou_threshold = config["bbox_validation"]["iou_threshold"]
 
         # Grounding DINO
@@ -56,6 +62,10 @@ class UnifiedLanguageModel:
         self.open_clip = OpenClipModel(
             self.openclip_model_name, self.openclip_pretrained_model
         )
+
+        # YOLOv8
+        self.yolov8 = Yolov8(self.yolo_model_name)
+        self.yolo_classes = create_yolo_classes(self.yolo_config_path)
 
     def __call__(self, image: cv2.Mat) -> sv.Detections:
         # Run DINO
@@ -135,5 +145,41 @@ class UnifiedLanguageModel:
                 for x in detections.class_id[valid_ids]
             ]
         )
+
+        # Run YOLOv8
+        yolo_detections = self.yolov8(
+            image,
+            self.yolo_confidence,
+        )
+        yolo_detections.class_id = np.array(
+            [
+                self.detection_classes.index(self.yolo_classes[yolo_id])
+                for yolo_id in yolo_detections.class_id
+            ]
+        )
+
+        detections = sv.Detections.merge(
+            [
+                detections,
+                yolo_detections,
+            ]
+        )
+        detections.class_id = np.array(
+            [int(class_id) for _, _, _, class_id, _, _ in detections]
+        )
+
+        # # apply NMS again after merge detections
+        nms_idx = (
+            torchvision.ops.nms(
+                torch.from_numpy(detections.xyxy),
+                torch.from_numpy(detections.confidence),
+                self.nms_threshold,
+            )
+            .numpy()
+            .tolist()
+        )
+        detections.xyxy = detections.xyxy[nms_idx]
+        detections.confidence = detections.confidence[nms_idx]
+        detections.class_id = detections.class_id[nms_idx]
 
         return detections

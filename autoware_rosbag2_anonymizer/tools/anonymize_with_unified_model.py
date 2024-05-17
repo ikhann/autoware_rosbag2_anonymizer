@@ -1,5 +1,8 @@
 import cv_bridge
 
+import supervision as sv
+import cv2
+
 from autoware_rosbag2_anonymizer.rosbag_io.rosbag_reader import RosbagReader
 from autoware_rosbag2_anonymizer.rosbag_io.rosbag_writer import RosbagWriter
 
@@ -58,13 +61,21 @@ def anonymize_with_unified_model(config_data, json_data, device) -> None:
             # Debug ------------------
             # DETECTION_CLASSES, CLASSES, CLASS_MAP = create_classes(json_data=json_data)
 
-            # box_annotator = sv.BoxAnnotator()
+            # bounding_box_annotator = sv.BoundingBoxAnnotator()
+            # annotated_image = bounding_box_annotator.annotate(
+            #     scene=output,
+            #     detections=detections,
+            # )
+
             # labels = [
             #     f"{DETECTION_CLASSES[class_id]} {confidence:0.2f}"
             #     for _, _, confidence, class_id, _, _ in detections
             # ]
-            # annotated_image = box_annotator.annotate(
-            #     scene=output, detections=detections, labels=labels
+            # label_annotator = sv.LabelAnnotator()
+            # annotated_image = label_annotator.annotate(
+            #     output,
+            #     detections,
+            #     labels,
             # )
 
             # height, width = image.shape[:2]

@@ -3,6 +3,7 @@ from typing import List, Tuple, Dict
 import cv2
 
 import os
+import yaml
 
 
 def get_file_paths(root_folder: str, extensions: List[str]):
@@ -46,6 +47,13 @@ def create_classes(json_data) -> Tuple[List[str], List[str], Dict]:
         }
 
     return detection_classes, prompts, prompts_map
+
+
+def create_yolo_classes(yolo_config_path) -> List[str]:
+    with open(yolo_config_path, "r") as file:
+        yolo_config = yaml.safe_load(file)
+
+    return yolo_config["names"]
 
 
 def calculate_iou(box1, box2) -> int:

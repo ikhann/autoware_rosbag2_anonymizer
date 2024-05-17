@@ -4,7 +4,7 @@ import cv_bridge
 import supervision as sv
 
 from autoware_rosbag2_anonymizer.common import (
-    create_classes,
+    create_yolo_classes,
     blur_detections,
 )
 
@@ -16,8 +16,16 @@ from autoware_rosbag2_anonymizer.rosbag_io.rosbag_writer import RosbagWriter
 
 
 def yolo_anonymize(config_data, json_data, device) -> None:
+    
+    yolo_model_path = config_data["yolo"]["model"]
+    yolo_confidence = config_data["yolo"]["confidence"]
+    yolo_config_path = config_data["yolo"]["config_path"]
+
     # YOLOv8
-    yolo_model = Yolov8(config_data["yolo"]["model"])
+    yolo_model = Yolov8(yolo_model_path)
+
+    # Declare classes for YOLOv8 from yaml file
+    CLASSES = create_yolo_classes(yolo_config_path)
 
     # Segment-Anything
     SAM_ENCODER_VERSION = config_data["segment_anything"]["encoder_version"]
@@ -38,7 +46,7 @@ def yolo_anonymize(config_data, json_data, device) -> None:
         else:
             image = cv_bridge.CvBridge().compressed_imgmsg_to_cv2(msg.data)
 
-            detections = yolo_model(image)
+            detections = yolo_model(image, confidence=yolo_confidence)
 
             # Run SAM
             detections = sam(image=image, detections=detections)
@@ -52,15 +60,21 @@ def yolo_anonymize(config_data, json_data, device) -> None:
             )
             
             # Debug ------------------
-            # DETECTION_CLASSES, CLASSES, CLASS_MAP = create_classes(json_data=json_data)
-            
-            # box_annotator = sv.BoxAnnotator()
+            # bounding_box_annotator = sv.BoundingBoxAnnotator()
+            # annotated_image = bounding_box_annotator.annotate(
+            #     scene=output,
+            #     detections=detections,
+            # )
+
             # labels = [
             #     f"{CLASSES[class_id]} {confidence:0.2f}"
             #     for _, _, confidence, class_id, _, _ in detections
             # ]
-            # annotated_image = box_annotator.annotate(
-            #     scene=output, detections=detections, labels=labels
+            # label_annotator = sv.LabelAnnotator()
+            # annotated_image = label_annotator.annotate(
+            #     output,
+            #     detections,
+            #     labels,
             # )
 
             # height, width = image.shape[:2]

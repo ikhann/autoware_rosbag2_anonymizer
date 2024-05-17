@@ -33,7 +33,7 @@ wget https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/groundingdino_
 sudo apt install ros-humble-rosbag2-storage-mcap
 ```
 
-**Install pip packages**
+**Install `autoware_rosbag2_anonymizer` package**
 
 
 ``` shell

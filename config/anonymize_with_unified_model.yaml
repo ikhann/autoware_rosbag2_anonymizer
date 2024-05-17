@@ -16,6 +16,10 @@ openclip:
   model_name: 'ViT-B-32'
   pretrained_model: 'laion2b_s34b_b79k'
   score_threshold: 0.7
+yolo:
+  model: '/home/bzeren/projects/labs/autoware_rosbag2_anonymizer/runs/detect/train/weights/best.pt'
+  config_path: '/home/bzeren/projects/labs/autoware_rosbag2_anonymizer/dataset/data.yaml'
+  confidence: 0.15
 bbox_validation:
   iou_threshold: 0.9
 blur:
