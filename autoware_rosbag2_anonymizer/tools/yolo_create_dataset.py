@@ -37,23 +37,25 @@ def yolo_create_dataset(config_data, json_data, device) -> None:
     ANNOTATIONS_DIRECTORY_PATH = os.path.join(DATASET_DIR_PATH, "annotations")
     IMAGES_DIRECTORY_PATH = os.path.join(DATASET_DIR_PATH, "images")
     DATA_YAML_PATH = os.path.join(DATASET_DIR_PATH, "data.yaml")
-    
+
     # Create folders if it is not exist
     os.makedirs(DATASET_DIR_PATH, exist_ok=True)
     os.makedirs(ANNOTATIONS_DIRECTORY_PATH, exist_ok=True)
     os.makedirs(IMAGES_DIRECTORY_PATH, exist_ok=True)
-    
+
     # Declare counter variable for naming
     IMAGE_COUNTER = 0
-    SUBSAMPLE_COEFFICIENT = config_data["dataset"]["output_dataset_subsample_coefficint"]
-    
+    SUBSAMPLE_COEFFICIENT = config_data["dataset"][
+        "output_dataset_subsample_coefficient"
+    ]
+
     for rosbag2_path in rosbag2_paths:
         reader = RosbagReader(rosbag2_path, SUBSAMPLE_COEFFICIENT)
-        
+
         for i, (msg, is_image) in enumerate(reader):
             if not is_image:
                 continue
-            
+
             # Convert image msg to cv.Mat
             image = image = cv_bridge.CvBridge().compressed_imgmsg_to_cv2(msg.data)
 
@@ -76,9 +78,9 @@ def yolo_create_dataset(config_data, json_data, device) -> None:
                 lines=lines,
                 file_path=f"{ANNOTATIONS_DIRECTORY_PATH}/image{IMAGE_COUNTER}.txt",
             )
-            
+
             IMAGE_COUNTER += 1
-            
+
             # box_annotator = sv.BoxAnnotator()
             # labels = [
             #     f"{DETECTION_CLASSES[class_id]} {confidence:0.2f}"
@@ -93,7 +95,7 @@ def yolo_create_dataset(config_data, json_data, device) -> None:
 
             # cv2.imshow("debug", image)
             # cv2.waitKey(1)
-            
+
     data = {"names": DETECTION_CLASSES, "nc": len(DETECTION_CLASSES)}
     with open(DATA_YAML_PATH, "w") as yaml_file:
         yaml.dump(data, yaml_file, default_flow_style=False)

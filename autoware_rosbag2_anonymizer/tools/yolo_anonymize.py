@@ -16,7 +16,7 @@ from autoware_rosbag2_anonymizer.rosbag_io.rosbag_writer import RosbagWriter
 
 
 def yolo_anonymize(config_data, json_data, device) -> None:
-    
+
     yolo_model_path = config_data["yolo"]["model"]
     yolo_confidence = config_data["yolo"]["confidence"]
     yolo_config_path = config_data["yolo"]["config_path"]
@@ -35,7 +35,7 @@ def yolo_anonymize(config_data, json_data, device) -> None:
     # Create rosbag reader and rosbag writer
     reader = RosbagReader(config_data["rosbag"]["input_bag_path"], 1)
     writer = RosbagWriter(
-        config_data["rosbag"]["output_bag_paht"],
+        config_data["rosbag"]["output_bag_path"],
         config_data["rosbag"]["output_save_compressed_image"],
         config_data["rosbag"]["output_storage_id"],
     )
@@ -58,7 +58,7 @@ def yolo_anonymize(config_data, json_data, device) -> None:
                 config_data["blur"]["kernel_size"],
                 config_data["blur"]["sigma_x"],
             )
-            
+
             # Debug ------------------
             # bounding_box_annotator = sv.BoundingBoxAnnotator()
             # annotated_image = bounding_box_annotator.annotate(

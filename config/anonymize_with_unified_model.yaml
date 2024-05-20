@@ -1,6 +1,6 @@
 rosbag:
   input_bag_path: '/home/bzeren/projects/labs/data/rosbags/rosbag2_2024_03_22-18_27_21/rosbag2_2024_03_22-18_27_21_0-001.mcap'
-  output_bag_paht: '/home/bzeren/projects/labs/data/rosbags/rosbag2_2024_03_22-18_27_21/output'
+  output_bag_path: '/home/bzeren/projects/labs/data/rosbags/rosbag2_2024_03_22-18_27_21/output'
   output_save_compressed_image: True
   output_storage_id: 'sqlite3' # 'sqlite3' or 'mcap'
 grounding_dino:

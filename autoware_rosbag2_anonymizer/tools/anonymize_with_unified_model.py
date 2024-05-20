@@ -20,7 +20,7 @@ from autoware_rosbag2_anonymizer.common import (
 def anonymize_with_unified_model(config_data, json_data, device) -> None:
     reader = RosbagReader(config_data["rosbag"]["input_bag_path"], 1)
     writer = RosbagWriter(
-        config_data["rosbag"]["output_bag_paht"],
+        config_data["rosbag"]["output_bag_path"],
         config_data["rosbag"]["output_save_compressed_image"],
         config_data["rosbag"]["output_storage_id"],
     )
