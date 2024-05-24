@@ -179,8 +179,10 @@ You should label the missing labels manually.
 <ins>Step 3:</ins> After labeling the missing labels, you should split the dataset into train and validation sets.
 If the labeling tool you used does not provide a split option, you can use the following command to split the dataset.
 
+Give the path to the dataset folder which is created in the first step.
+
 ``` shell
-TODO
+autoware-rosbag2-anonymizer-split-dataset /path/to/dataset
 ```
 
 <ins>Step 4:</ins> Train the YOLOv8 model with the dataset.

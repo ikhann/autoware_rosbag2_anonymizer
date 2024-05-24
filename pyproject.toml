@@ -2,6 +2,9 @@
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+py-modules = []
+
 [project]
 name = "autoware_rosbag2_anonymizer"
 version = "0.0.0"
@@ -25,9 +28,12 @@ maintainers = [
   {name = "Barış Zeren", email = "baris@leodrive.ai"}
 ]
 description = "A Python project to anonymize the ROS 2 bag files."
-readme = {file = "README.txt", content-type = "text/markdown"}
+readme = {file = "README.md", content-type = "text/markdown"}
 
 [project.urls]
 Documentation = "https://github.com/autowarefoundation/autoware_rosbag2_anonymizer/blob/main/README.md"
 Repository = "https://github.com/autowarefoundation/autoware_rosbag2_anonymizer"
 Issues = "https://github.com/orgs/autowarefoundation/discussions"
+
+[project.scripts]
+autoware-rosbag2-anonymizer-split-dataset = 'autoware_rosbag2_anonymizer.common:split_dataset'

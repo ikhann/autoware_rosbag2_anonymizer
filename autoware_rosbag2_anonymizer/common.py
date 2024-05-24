@@ -3,7 +3,10 @@ from typing import List, Tuple, Dict
 import cv2
 
 import os
+import sys
 import yaml
+
+import supervision as sv
 
 
 def get_file_paths(root_folder: str, extensions: List[str]):
@@ -88,3 +91,41 @@ def blur_detections(img, detections, kernel_size, sigma_x):
     for _, mask, _, _, _, _ in detections:
         output[mask] = blurred_img[mask]
     return output_img
+
+
+def split_dataset() -> None:
+    if len(sys.argv) != 2:
+        print("Usage: autoware-rosbag2-anonymizer-split-dataset <dataset-path>")
+        return
+
+    dataset_path = sys.argv[1]
+
+    ds = sv.DetectionDataset.from_yolo(
+        images_directory_path=os.path.join(dataset_path, "images"),
+        annotations_directory_path=os.path.join(dataset_path, "annotations"),
+        data_yaml_path=os.path.join(dataset_path, "data.yaml"),
+    )
+
+    train_ds, val_ds = ds.split(split_ratio=0.7, random_state=42, shuffle=True)
+
+    train_ds.as_yolo(
+        os.path.join(dataset_path, "train/images"),
+        os.path.join(dataset_path, "train/labels"),
+    )
+    val_ds.as_yolo(
+        os.path.join(dataset_path, "valid/images"),
+        os.path.join(dataset_path, "valid/labels"),
+    )
+    
+    with open(os.path.join(dataset_path, "data.yaml"), 'r') as f:
+        yaml_content = yaml.safe_load(f)
+    
+    data = {
+        'train': '../train/images',
+        'val': '../valid/images',
+        'test': '../test/images'
+    }
+    yaml_content.update(data)
+    
+    with open(os.path.join(dataset_path, "data.yaml"), "w") as yaml_file:
+        yaml.dump(yaml_content, yaml_file, default_flow_style=False)
