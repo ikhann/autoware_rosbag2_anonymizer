@@ -1,8 +1,8 @@
 rosbag:
-  input_bag_path: '/home/bzeren/projects/labs/data/rosbags/rosbag2_2024_03_22-18_27_21/rosbag2_2024_03_22-18_27_21_0-001.mcap'
-  output_bag_path: '/home/bzeren/projects/labs/data/rosbags/rosbag2_2024_03_22-18_27_21/output'
+  input_bags_folder: '/media/bzeren/PortableSSD/YTU-DATA/rosbag2-anonymizer'
+  output_bags_folder: '/media/bzeren/PortableSSD/YTU-DATA/rosbag2-anonymizer/output'
   output_save_compressed_image: True
-  output_storage_id: 'sqlite3' # 'sqlite3' or 'mcap'
+  output_storage_id: 'mcap' # 'sqlite3' or 'mcap'
 grounding_dino:
   config_path: './GroundingDINO_SwinB.cfg.py'
   checkpoint_path: './groundingdino_swinb_cogcoor.pth'

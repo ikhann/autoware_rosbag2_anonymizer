@@ -1,3 +1,5 @@
+import os
+
 import cv_bridge
 
 import supervision as sv
@@ -14,17 +16,11 @@ from autoware_rosbag2_anonymizer.model.sam import SAM
 from autoware_rosbag2_anonymizer.common import (
     create_classes,
     blur_detections,
+    get_file_paths,
 )
 
 
 def anonymize_with_unified_model(config_data, json_data, device) -> None:
-    reader = RosbagReader(config_data["rosbag"]["input_bag_path"], 1)
-    writer = RosbagWriter(
-        config_data["rosbag"]["output_bag_path"],
-        config_data["rosbag"]["output_save_compressed_image"],
-        config_data["rosbag"]["output_storage_id"],
-    )
-
     # Segment-Anything parameters
     SAM_ENCODER_VERSION = config_data["segment_anything"]["encoder_version"]
     SAM_CHECKPOINT_PATH = config_data["segment_anything"]["checkpoint_path"]
@@ -34,52 +30,68 @@ def anonymize_with_unified_model(config_data, json_data, device) -> None:
 
     unified_language_model = UnifiedLanguageModel(config_data, json_data)
 
-    for i, (msg, is_image) in enumerate(reader):
-        if not is_image:
-            writer.write_any(msg.data, msg.type, msg.topic, msg.timestamp)
-        else:
-            # Convert image msg to cv.Mat
-            image = cv_bridge.CvBridge().compressed_imgmsg_to_cv2(msg.data)
+    # Get rosbag paths from input folder
+    rosbag2_paths = get_file_paths(
+        config_data["rosbag"]["input_bags_folder"], [".db3", ".mcap"]
+    )
 
-            # Find bounding boxes with Unified Model
-            detections = unified_language_model(image)
+    # Create output folder if it is not exist
+    os.makedirs(config_data["rosbag"]["output_bags_folder"], exist_ok=True)
 
-            # Run SAM
-            detections = sam(image=image, detections=detections)
+    for rosbag2_path in rosbag2_paths:
+        reader = RosbagReader(rosbag2_path, 1)
+        writer = RosbagWriter(
+            os.path.join(config_data["rosbag"]["output_bags_folder"], rosbag2_path.split("/")[-1].split(".")[0]),
+            config_data["rosbag"]["output_save_compressed_image"],
+            config_data["rosbag"]["output_storage_id"],
+        )
 
-            # Blur detections
-            output = blur_detections(
-                image,
-                detections,
-                config_data["blur"]["kernel_size"],
-                config_data["blur"]["sigma_x"],
-            )
+        for i, (msg, is_image) in enumerate(reader):
+            if not is_image:
+                writer.write_any(msg.data, msg.type, msg.topic, msg.timestamp)
+            else:
+                # Convert image msg to cv.Mat
+                image = cv_bridge.CvBridge().compressed_imgmsg_to_cv2(msg.data)
 
-            # Write blured image to rosbag
-            writer.write_image(output, msg.topic, msg.timestamp)
+                # Find bounding boxes with Unified Model
+                detections = unified_language_model(image)
 
-            # Debug ------------------
-            # DETECTION_CLASSES, CLASSES, CLASS_MAP = create_classes(json_data=json_data)
+                # Run SAM
+                detections = sam(image=image, detections=detections)
 
-            # bounding_box_annotator = sv.BoundingBoxAnnotator()
-            # annotated_image = bounding_box_annotator.annotate(
-            #     scene=output,
-            #     detections=detections,
-            # )
+                # Blur detections
+                output = blur_detections(
+                    image,
+                    detections,
+                    config_data["blur"]["kernel_size"],
+                    config_data["blur"]["sigma_x"],
+                )
 
-            # labels = [
-            #     f"{DETECTION_CLASSES[class_id]} {confidence:0.2f}"
-            #     for _, _, confidence, class_id, _, _ in detections
-            # ]
-            # label_annotator = sv.LabelAnnotator()
-            # annotated_image = label_annotator.annotate(
-            #     output,
-            #     detections,
-            #     labels,
-            # )
+                # Write blured image to rosbag
+                writer.write_image(output, msg.topic, msg.timestamp)
 
-            # height, width = image.shape[:2]
-            # annotated_image = cv2.resize(annotated_image, (width // 2, height // 2))
-            # cv2.imshow("test", annotated_image)
-            # cv2.waitKey(1)
-            # Debug ------------------
+                # Debug ------------------
+                # DETECTION_CLASSES, CLASSES, CLASS_MAP = create_classes(json_data=json_data)
+
+                # bounding_box_annotator = sv.BoundingBoxAnnotator()
+                # annotated_image = bounding_box_annotator.annotate(
+                #     scene=output,
+                #     detections=detections,
+                # )
+
+                # labels = [
+                #     f"{DETECTION_CLASSES[class_id]} {confidence:0.2f}"
+                #     for _, _, confidence, class_id, _, _ in detections
+                # ]
+                # label_annotator = sv.LabelAnnotator()
+                # annotated_image = label_annotator.annotate(
+                #     output,
+                #     detections,
+                #     labels,
+                # )
+
+                # height, width = image.shape[:2]
+                # annotated_image = cv2.resize(annotated_image, (width // 2, height // 2))
+                # cv2.imshow("test", annotated_image)
+                # cv2.waitKey(1)
+                # Debug ------------------
