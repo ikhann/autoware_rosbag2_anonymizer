@@ -14,7 +14,7 @@ A tool to anonymize images in ros2 bags. The tool combines GroundingDINO, OpenCL
 **Clone the repository**
 
 ``` shell
-git clone git@github.com:leo-drive/rosbag2_anonymizer.git
+git clone https://github.com/autowarefoundation/autoware_rosbag2_anonymizer.git
 cd rosbag2_anonymizer
 ```
 
