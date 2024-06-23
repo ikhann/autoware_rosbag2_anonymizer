@@ -1,6 +1,6 @@
 rosbag:
-  input_bags_folder: '/media/bzeren/PortableSSD/YTU-DATA/rosbag2-anonymizer'
-  output_bags_folder: '/media/bzeren/PortableSSD/YTU-DATA/rosbag2-anonymizer/output'
+  input_bags_folder: '/path/to/input_bag_folder'
+  output_bags_folder: '/path/to/output_folder'
   output_save_compressed_image: True
   output_storage_id: 'mcap' # 'sqlite3' or 'mcap'
 grounding_dino:
@@ -17,8 +17,8 @@ openclip:
   pretrained_model: 'laion2b_s34b_b79k'
   score_threshold: 0.7
 yolo:
-  model: '/home/bzeren/projects/labs/autoware_rosbag2_anonymizer/runs/detect/train/weights/best.pt'
-  config_path: '/home/bzeren/projects/labs/autoware_rosbag2_anonymizer/dataset/data.yaml'
+  model: './yolov8x_anonymizer.pt'
+  config_path: './yolo_config.yaml'
   confidence: 0.15
 bbox_validation:
   iou_threshold: 0.9

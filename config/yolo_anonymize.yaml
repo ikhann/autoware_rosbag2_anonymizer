@@ -1,11 +1,11 @@
 rosbag:
-  input_bag_path: '/media/bzeren/PortableSSD/YTU-DATA/rosbag2-anonymizer/rosbag2_2024_05_13-15_36_03/rosbag2_2024_05_13-15_36_03_0.db3'
-  output_bag_path: '/home/bzeren/projects/labs/data/rosbags/rosbag2_2024_03_22-18_27_21/output'
+  input_bag_path: '/path/to/input_bag_file'
+  output_bag_path: '/path/to/output_bag_file'
   output_save_compressed_image: True
   output_storage_id: 'sqlite3' # 'sqlite3' or 'mcap'
 yolo:
-  model: '/home/bzeren/projects/labs/autoware_rosbag2_anonymizer/runs/detect/train/weights/best.pt'
-  config_path: '/home/bzeren/projects/labs/autoware_rosbag2_anonymizer/dataset/data.yaml'
+  model: './yolov8x_anonymizer.pt'
+  config_path: './yolo_config.yaml'
   confidence: 0.15
 segment_anything:
   encoder_version: 'vit_h'

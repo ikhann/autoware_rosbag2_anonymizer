@@ -15,7 +15,7 @@ A tool to anonymize images in ros2 bags. The tool combines GroundingDINO, OpenCL
 
 ``` shell
 git clone https://github.com/autowarefoundation/autoware_rosbag2_anonymizer.git
-cd rosbag2_anonymizer
+cd autoware_rosbag2_anonymizer
 ```
 
 **Download the pretrained weights**
@@ -25,6 +25,9 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 
 wget https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/GroundingDINO_SwinB.cfg.py
 wget https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/groundingdino_swinb_cogcoor.pth
+
+wget https://github.com/autowarefoundation/autoware_rosbag2_anonymizer/releases/download/v0.0.0/yolov8x_anonymizer.pt
+wget https://github.com/autowarefoundation/autoware_rosbag2_anonymizer/releases/download/v0.0.0/yolo_config.yaml
 ```
 
 **Install ros2 mcap dependencies if you will use mcap files**
@@ -35,6 +38,11 @@ sudo apt install ros-humble-rosbag2-storage-mcap
 
 **Install `autoware_rosbag2_anonymizer` package**
 
+Before installing the tool, you should update the pip package manager.
+
+```bash
+python3 -m pip install pip -U
+```
 
 ``` shell
 python3 -m pip install .
@@ -69,8 +77,8 @@ Following instructions will guide you to set each configuration file.
 
 ```yaml
 rosbag:
-  input_bag_path: "path/to/input.bag" # Path to the input ROS2 bag file with 'mcap' or 'sqlite3' extension
-  output_bag_path: "path/to/output/folder" # Path to the output ROS2 bag folder
+  input_bags_folder: "/path/to/input_bag_folder" # Path to the input folder which contains ROS 2 bag files
+  output_bags_folder: "/path/to/output_folder" # Path to the output ROS 2 bag folder
   output_save_compressed_image: True # Save images as compressed images (True or False)
   output_storage_id: "sqlite3" # Storage id for the output bag file (`sqlite3` or `mcap`)
 
@@ -97,10 +105,10 @@ blur:
 
 ```yaml
 rosbag:
-  input_bags_folder: "path/to/input/folder" # Path to the input ROS2 bag files folder
+  input_bags_folder: "/path/to/input_bag_folder" # Path to the input ROS 2 bag files folder
 
 dataset:
-  output_dataset_folder: "path/to/output/folder" # Path to the output dataset folder
+  output_dataset_folder: "/path/to/output/dataset" # Path to the output dataset folder
   output_dataset_subsample_coefficient: 25 # Subsample coefficient for the dataset (int)
 
 grounding_dino:
@@ -119,7 +127,7 @@ bbox_validation:
 
 ```yaml
 dataset:
-  input_dataset_yaml: "path/to/input/data.yaml" # Path to the config file of the dataset, which is created in the previous step
+  input_dataset_yaml: "path/to/data.yaml" # Path to the config file of the dataset, which is created in the previous step
 
 yolo:
   epochs: 100 # Number of epochs for the YOLOv8 model (int)
@@ -130,8 +138,8 @@ yolo:
 
 ```yaml
 rosbag:
-  input_bag_path: "path/to/input.bag" # Path to the input ROS2 bag file with 'mcap' or 'sqlite3' extension
-  output_bag_path: "path/to/output/folder" # Path to the output ROS2 bag folder
+  input_bag_path: "/path/to/input_bag/bag.mcap" # Path to the input ROS 2 bag file with 'mcap' or 'sqlite3' extension
+  output_bag_path: "/path/to/output_bag_file" # Path to the output ROS 2 bag folder
   output_save_compressed_image: True # Save images as compressed images (True or False)
   output_storage_id: "sqlite3" # Storage id for the output bag file (`sqlite3` or `mcap`)
 

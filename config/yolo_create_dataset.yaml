@@ -1,7 +1,7 @@
 rosbag:
-  input_bags_folder: '/media/bzeren/PortableSSD/YTU-DATA/rosbag2-anonymizer'
+  input_bags_folder: '/path/to/input_bag_folder'
 dataset:
-  output_dataset_folder: '/media/bzeren/PortableSSD/YTU-DATA/rosbag2-anonymizer/dataset'
+  output_dataset_folder: '/path/to/output/dataset'
   output_dataset_subsample_coefficient: 25
 grounding_dino:
   config_path: './GroundingDINO_SwinB.cfg.py'

@@ -58,6 +58,9 @@ def yolo_anonymize(config_data, json_data, device) -> None:
                 config_data["blur"]["kernel_size"],
                 config_data["blur"]["sigma_x"],
             )
+            
+            # Write blured image to rosbag
+            writer.write_image(output, msg.topic, msg.timestamp)
 
             # Debug ------------------
             # bounding_box_annotator = sv.BoundingBoxAnnotator()
