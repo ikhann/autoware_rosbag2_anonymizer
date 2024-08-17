@@ -1,18 +1,4 @@
-from typing import Tuple, List
-import torch
-import numpy as np
-from groundingdino.util.inference import predict
-from groundingdino.util.slconfig import SLConfig
-from groundingdino.models import build_model
-from groundingdino.util.utils import clean_state_dict
-import groundingdino.datasets.transforms as T
-from groundingdino.util.inference import annotate
 from groundingdino.util.inference import Model
-
-from huggingface_hub import hf_hub_download
-
-from PIL import Image
-import cv2
 
 
 class GroundingDINO:
