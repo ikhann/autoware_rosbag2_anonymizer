@@ -16,5 +16,9 @@ openclip:
   model_name: 'ViT-B-32'
   pretrained_model: 'laion2b_s34b_b79k'
   score_threshold: 0.7
+yolo:
+  model: './yolov8x_anonymizer.pt'
+  config_path: './yolo_config.yaml'
+  confidence: 0.15
 bbox_validation:
   iou_threshold: 0.9

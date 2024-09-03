@@ -1,3 +1,5 @@
+import os
+
 import torch
 import torchvision
 
@@ -64,8 +66,11 @@ class UnifiedLanguageModel:
         )
 
         # YOLOv8
-        self.yolov8 = Yolov8(self.yolo_model_name)
-        self.yolo_classes = create_yolo_classes(self.yolo_config_path)
+        self.is_yolo_model_exist = os.path.exists(self.yolo_model_name) & os.path.exists(self.yolo_config_path)
+        
+        if self.is_yolo_model_exist:
+            self.yolov8 = Yolov8(self.yolo_model_name)
+            self.yolo_classes = create_yolo_classes(self.yolo_config_path)
 
     def __call__(self, image: cv2.Mat) -> sv.Detections:
         # Run DINO
@@ -147,39 +152,40 @@ class UnifiedLanguageModel:
         )
 
         # Run YOLOv8
-        yolo_detections = self.yolov8(
-            image,
-            self.yolo_confidence,
-        )
-        yolo_detections.class_id = np.array(
-            [
-                self.detection_classes.index(self.yolo_classes[yolo_id])
-                for yolo_id in yolo_detections.class_id
-            ]
-        )
-
-        detections = sv.Detections.merge(
-            [
-                detections,
-                yolo_detections,
-            ]
-        )
-        detections.class_id = np.array(
-            [int(class_id) for _, _, _, class_id, _, _ in detections]
-        )
-
-        # # apply NMS again after merge detections
-        nms_idx = (
-            torchvision.ops.nms(
-                torch.from_numpy(detections.xyxy),
-                torch.from_numpy(detections.confidence),
-                self.nms_threshold,
+        if self.is_yolo_model_exist:
+            yolo_detections = self.yolov8(
+                image,
+                self.yolo_confidence,
             )
-            .numpy()
-            .tolist()
-        )
-        detections.xyxy = detections.xyxy[nms_idx]
-        detections.confidence = detections.confidence[nms_idx]
-        detections.class_id = detections.class_id[nms_idx]
+            yolo_detections.class_id = np.array(
+                [
+                    self.detection_classes.index(self.yolo_classes[yolo_id])
+                    for yolo_id in yolo_detections.class_id
+                ]
+            )
+
+            detections = sv.Detections.merge(
+                [
+                    detections,
+                    yolo_detections,
+                ]
+            )
+            detections.class_id = np.array(
+                [int(class_id) for _, _, _, class_id, _, _ in detections]
+            )
+
+            # # apply NMS again after merge detections
+            nms_idx = (
+                torchvision.ops.nms(
+                    torch.from_numpy(detections.xyxy),
+                    torch.from_numpy(detections.confidence),
+                    self.nms_threshold,
+                )
+                .numpy()
+                .tolist()
+            )
+            detections.xyxy = detections.xyxy[nms_idx]
+            detections.confidence = detections.confidence[nms_idx]
+            detections.class_id = detections.class_id[nms_idx]
 
         return detections
