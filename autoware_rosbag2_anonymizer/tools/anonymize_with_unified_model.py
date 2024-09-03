@@ -67,6 +67,13 @@ def anonymize_with_unified_model(config_data, json_data, device) -> None:
                     config_data["blur"]["sigma_x"],
                 )
 
+                # Print detections: how many objects are detected in each class
+                print("\nDetections:")
+                for class_id in range(len(unified_language_model.detection_classes)):
+                    print(
+                        f"{unified_language_model.detection_classes[class_id]}: {len([d for d in detections if d[3] == class_id])}"
+                    )
+
                 # Write blured image to rosbag
                 writer.write_image(output, msg.topic, msg.timestamp)
 

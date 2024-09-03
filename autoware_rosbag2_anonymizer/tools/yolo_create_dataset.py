@@ -62,6 +62,13 @@ def yolo_create_dataset(config_data, json_data, device) -> None:
             # Find bounding boxes with Unified Model
             detections = unified_language_model(image)
 
+            # Print detections: how many objects are detected in each class
+            print("\nDetections:")
+            for class_id in range(len(unified_language_model.detection_classes)):
+                print(
+                    f"{unified_language_model.detection_classes[class_id]}: {len([d for d in detections if d[3] == class_id])}"
+                )
+
             cv2.imwrite(
                 filename=f"{IMAGES_DIRECTORY_PATH}/image{IMAGE_COUNTER}.jpg",
                 img=image,
