@@ -188,7 +188,10 @@ python3 main.py config/yolo_create_dataset.yaml --yolo_create_dataset
 ```
 
 <ins>Step 2:</ins> The dataset which is created in the first step has some missing labels.
-You should label the missing labels manually.
+You should label the missing labels manually. You can use the following example tools to label the missing labels:
+
+- [label-studio](https://github.com/HumanSignal/label-studio)
+- [Roboflow](https://roboflow.com/) (You can use the free version)
 
 <ins>Step 3:</ins> After labeling the missing labels, you should split the dataset into train and validation sets.
 If the labeling tool you used does not provide a split option, you can use the following command to split the dataset.
