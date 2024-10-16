@@ -12,7 +12,6 @@ import numpy as np
 
 from autoware_rosbag2_anonymizer.model.open_clip import OpenClipModel
 from autoware_rosbag2_anonymizer.model.grounding_dino import GroundingDINO
-from autoware_rosbag2_anonymizer.model.sam import SAM
 from autoware_rosbag2_anonymizer.model.yolo import Yolo
 
 from autoware_rosbag2_anonymizer.common import (
@@ -39,9 +38,6 @@ class UnifiedLanguageModel:
         self.text_threshold = config["grounding_dino"]["text_threshold"]
         self.nms_threshold = config["grounding_dino"]["nms_threshold"]
 
-        self.sam_encoder_version = config["segment_anything"]["encoder_version"]
-        self.sam_checkpoint_path = config["segment_anything"]["checkpoint_path"]
-
         self.openclip_model_name = config["openclip"]["model_name"]
         self.openclip_pretrained_model = config["openclip"]["pretrained_model"]
         self.openclip_score_threshold = config["openclip"]["score_threshold"]
@@ -56,9 +52,6 @@ class UnifiedLanguageModel:
         self.grounding_dino = GroundingDINO(
             self.grounding_dino_config_path, self.grounding_dino_checkpoint_path
         )
-
-        # Segment-Anything
-        self.sam = SAM(self.sam_encoder_version, self.sam_checkpoint_path, self.device)
 
         # Openclip
         self.open_clip = OpenClipModel(

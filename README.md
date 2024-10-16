@@ -1,6 +1,6 @@
 ### Introduction
 
-A tool to anonymize images in ros2 bags. The tool combines GroundingDINO, OpenCLIP and SegmentAnything to anonymize images in rosbags
+A tool to anonymize images in ros2 bags. The tool combines GroundingDINO, OpenCLIP, SegmentAnything2 and YOLO to anonymize images in rosbags
 
 <p align="center">
     <img src="docs/rosbag2_anonymizer.png" alt="system" height="387px"/>
@@ -21,7 +21,7 @@ cd autoware_rosbag2_anonymizer
 **Download the pretrained weights**
 
 ``` shell
-wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+wget https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_small.pt
 
 wget https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/GroundingDINO_SwinB.cfg.py
 wget https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/groundingdino_swinb_cogcoor.pth

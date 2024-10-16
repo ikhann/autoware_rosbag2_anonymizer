@@ -11,7 +11,7 @@ from autoware_rosbag2_anonymizer.rosbag_io.rosbag_writer import RosbagWriter
 from autoware_rosbag2_anonymizer.model.unified_language_model import (
     UnifiedLanguageModel,
 )
-from autoware_rosbag2_anonymizer.model.sam import SAM
+from autoware_rosbag2_anonymizer.model.sam2 import SAM2
 
 from autoware_rosbag2_anonymizer.common import (
     create_classes,
@@ -21,12 +21,12 @@ from autoware_rosbag2_anonymizer.common import (
 
 
 def anonymize_with_unified_model(config_data, json_data, device) -> None:
-    # Segment-Anything parameters
-    SAM_ENCODER_VERSION = config_data["segment_anything"]["encoder_version"]
-    SAM_CHECKPOINT_PATH = config_data["segment_anything"]["checkpoint_path"]
+    # Segment-Anything-2 parameters
+    SAM2_MODEL_CFG = config_data["segment_anything_2"]["model_cfg"]
+    SAM_CHECKPOINT_PATH = config_data["segment_anything_2"]["checkpoint_path"]
 
-    # Segment-Anything
-    sam = SAM(SAM_ENCODER_VERSION, SAM_CHECKPOINT_PATH, device)
+    # Segment-Anything-2
+    sam2 = SAM2(SAM2_MODEL_CFG, SAM_CHECKPOINT_PATH, device)
 
     unified_language_model = UnifiedLanguageModel(config_data, json_data)
 
@@ -56,8 +56,8 @@ def anonymize_with_unified_model(config_data, json_data, device) -> None:
                 # Find bounding boxes with Unified Model
                 detections = unified_language_model(image)
 
-                # Run SAM
-                detections = sam(image=image, detections=detections)
+                # Run SAM2
+                detections = sam2(image=image, detections=detections)
 
                 # Blur detections
                 output = blur_detections(

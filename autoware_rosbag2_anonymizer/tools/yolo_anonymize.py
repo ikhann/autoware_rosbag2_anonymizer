@@ -9,7 +9,7 @@ from autoware_rosbag2_anonymizer.common import (
 )
 
 from autoware_rosbag2_anonymizer.model.yolo import Yolo
-from autoware_rosbag2_anonymizer.model.sam import SAM
+from autoware_rosbag2_anonymizer.model.sam2 import SAM2
 
 from autoware_rosbag2_anonymizer.rosbag_io.rosbag_reader import RosbagReader
 from autoware_rosbag2_anonymizer.rosbag_io.rosbag_writer import RosbagWriter
@@ -27,10 +27,10 @@ def yolo_anonymize(config_data, json_data, device) -> None:
     # Declare classes for YOLO from yaml file
     CLASSES = create_yolo_classes(yolo_config_path)
 
-    # Segment-Anything
-    SAM_ENCODER_VERSION = config_data["segment_anything"]["encoder_version"]
-    SAM_CHECKPOINT_PATH = config_data["segment_anything"]["checkpoint_path"]
-    sam = SAM(SAM_ENCODER_VERSION, SAM_CHECKPOINT_PATH, device)
+    # Segment-Anything-2
+    SAM2_MODEL_CFG = config_data["segment_anything_2"]["model_cfg"]
+    SAM_CHECKPOINT_PATH = config_data["segment_anything_2"]["checkpoint_path"]
+    sam2 = SAM2(SAM2_MODEL_CFG, SAM_CHECKPOINT_PATH, device)
 
     # Create rosbag reader and rosbag writer
     reader = RosbagReader(config_data["rosbag"]["input_bag_path"], 1)
@@ -49,7 +49,7 @@ def yolo_anonymize(config_data, json_data, device) -> None:
             detections = yolo_model(image, confidence=yolo_confidence)
 
             # Run SAM
-            detections = sam(image=image, detections=detections)
+            detections = sam2(image=image, detections=detections)
 
             # Blur detections
             output = blur_detections(

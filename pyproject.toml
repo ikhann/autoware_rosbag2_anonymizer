@@ -25,6 +25,7 @@ dependencies = [
   "open_clip_torch",
   "ultralytics",
   "groundingdino-py @ git+https://github.com/leo-drive/GroundingDINO.git@main",
+  "sam-2 @ git+https://github.com/facebookresearch/segment-anything-2.git",
 ]
 requires-python = ">= 3.8"
 authors = [

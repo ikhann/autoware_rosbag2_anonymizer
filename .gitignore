@@ -1,8 +1,13 @@
 GroundingDINO_SwinB.cfg.py
 groundingdino_swinb_cogcoor.pth
-sam_vit_h_4b8939.pth
+sam2.1_hiera_large.pt
+sam2.1_hiera_small.pt
+yolo_config.yaml
 yolov8n.pt
 yolov8x.pt
+yolov8x_anonymizer.pt
+yolo11x.pt
+yolo11x_anonymizer.pt
 
 dataset/
 
