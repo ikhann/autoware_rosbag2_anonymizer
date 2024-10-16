@@ -26,8 +26,8 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 wget https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/GroundingDINO_SwinB.cfg.py
 wget https://huggingface.co/ShilongLiu/GroundingDINO/resolve/main/groundingdino_swinb_cogcoor.pth
 
-wget https://github.com/autowarefoundation/autoware_rosbag2_anonymizer/releases/download/v0.0.0/yolov8x_anonymizer.pt
-wget https://github.com/autowarefoundation/autoware_rosbag2_anonymizer/releases/download/v0.0.0/yolo_config.yaml
+wget https://github.com/autowarefoundation/autoware_rosbag2_anonymizer/releases/download/v1.0.0/yolo11x_anonymizer.pt
+wget https://github.com/autowarefoundation/autoware_rosbag2_anonymizer/releases/download/v1.0.0/yolo_config.yaml
 ```
 
 **Install ros2 mcap dependencies if you will use mcap files**
