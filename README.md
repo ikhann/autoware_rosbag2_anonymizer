@@ -91,7 +91,7 @@ open_clip:
   score_threshold: 0.7 # Validity threshold for the OpenCLIP model (float
 
 yolo:
-  confidence: 0.15 # Confidence threshold for the YOLOv8 model (float)
+  confidence: 0.15 # Confidence threshold for the YOLO model (float)
 
 bbox_validation:
   iou_threshold: 0.9 # Threshold for the intersection over union (float), if the intersection over union is greater than this threshold, the object will be selected as inside the validation prompt
@@ -130,8 +130,8 @@ dataset:
   input_dataset_yaml: "path/to/data.yaml" # Path to the config file of the dataset, which is created in the previous step
 
 yolo:
-  epochs: 100 # Number of epochs for the YOLOv8 model (int)
-  model: 'yolov8x.pt' # Select the base model for YOLOv8 ('yolov8x.pt' 'yolov8l.pt', 'yolov8m.pt', 'yolov8n.pt')
+  epochs: 100 # Number of epochs for the YOLO model (int)
+  model: 'yolo11x.pt' # Select the base model for YOLO ('yolo11x.pt' 'yolo11l.pt', 'yolo11m.pt', 'yolo11s.pt', 'yolo11n.pt)
 ```
 
 **`config/yolo_anonymize.yaml`**
@@ -144,9 +144,9 @@ rosbag:
   output_storage_id: "sqlite3" # Storage id for the output bag file (`sqlite3` or `mcap`)
 
 yolo:
-  model: "path/to/yolo/model" # Path to the trained YOLOv8 model file (`.pt` extension) (you can download the pre-trained model from releases)
+  model: "path/to/yolo/model" # Path to the trained YOLO model file (`.pt` extension) (you can download the pre-trained model from releases)
   config_path: "path/to/input/data.yaml" # Path to the config file of the dataset, which is created in the previous step
-  confidence: 0.15 # Confidence threshold for the YOLOv8 model (float)
+  confidence: 0.15 # Confidence threshold for the YOLO model (float)
 
 blur:
   kernel_size: 31 # Kernel size for the Gaussian blur (int)
@@ -166,9 +166,9 @@ source /path/to/your/workspace/install/setup.bash
 **Option 1: Anonymize with Unified Model**
 
 You should provide a single rosbag and tool anonymize images in rosbag with a unified model.
-The model is a combination of GroundingDINO, OpenCLIP, YOLOv8 and SegmentAnything.
-If you don't want to use pre-trained YOLOv8 model, you can follow the instructions in the second option to train your 
-own YOLOv8 model.
+The model is a combination of GroundingDINO, OpenCLIP, YOLO and SegmentAnything.
+If you don't want to use pre-trained YOLO model, you can follow the instructions in the second option to train your 
+own YOLO model.
 
 You should set your configuration in `config/anonymize_with_unified_model.yaml` file.
 
@@ -176,7 +176,7 @@ You should set your configuration in `config/anonymize_with_unified_model.yaml` 
 python3 main.py config/anonymize_with_unified_model.yaml --anonymize_with_unified_model
 ```
 
-**Option 2: Anonymize Using the YOLOv8 Model Trained on a Dataset Created with the Unified Model**
+**Option 2: Anonymize Using the YOLO Model Trained on a Dataset Created with the Unified Model**
 
 <ins>Step 1:</ins> Create an initial dataset with the unified model.
 You can provide multiple rosbags to create a dataset.
@@ -202,19 +202,19 @@ Give the path to the dataset folder which is created in the first step.
 autoware-rosbag2-anonymizer-split-dataset /path/to/dataset
 ```
 
-<ins>Step 4:</ins> Train the YOLOv8 model with the dataset.
+<ins>Step 4:</ins> Train the YOLO model with the dataset.
 You should set your configuration in `config/yolo_train.yaml` file.
 
 ``` shell
 python3 main.py config/yolo_train.yaml --yolo_train
 ```
 
-<ins>Step 5:</ins> Anonymize images in rosbags with the trained YOLOv8 model.
+<ins>Step 5:</ins> Anonymize images in rosbags with the trained YOLO model.
 You should set your configuration in `config/yolo_anonymize.yaml` file. 
-If you want to anonymize your ROS2 bag file with only YOLOv8 model,
+If you want to anonymize your ROS2 bag file with only YOLO model,
 you should use following command.
 But we recommend to use the unified model for better results.
-You can follow the `Option 1` for the unified model with the YOLOv8 model trained by you.
+You can follow the `Option 1` for the unified model with the YOLO model trained by you.
 
 ``` shell
 python3 main.py config/yolo_anonymize.yaml --yolo_anonymize

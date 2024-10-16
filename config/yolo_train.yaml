@@ -2,4 +2,4 @@ dataset:
   input_dataset_yaml: 'path/to/data.yaml'
 yolo:
   epochs: 100
-  model: 'yolov8x.pt'
+  model: 'yolo11x.pt'

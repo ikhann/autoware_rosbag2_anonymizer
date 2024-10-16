@@ -13,7 +13,7 @@ import numpy as np
 from autoware_rosbag2_anonymizer.model.open_clip import OpenClipModel
 from autoware_rosbag2_anonymizer.model.grounding_dino import GroundingDINO
 from autoware_rosbag2_anonymizer.model.sam import SAM
-from autoware_rosbag2_anonymizer.model.yolov8 import Yolov8
+from autoware_rosbag2_anonymizer.model.yolo import Yolo
 
 from autoware_rosbag2_anonymizer.common import (
     create_classes,
@@ -65,11 +65,13 @@ class UnifiedLanguageModel:
             self.openclip_model_name, self.openclip_pretrained_model
         )
 
-        # YOLOv8
-        self.is_yolo_model_exist = os.path.exists(self.yolo_model_name) & os.path.exists(self.yolo_config_path)
-        
+        # YOLO
+        self.is_yolo_model_exist = os.path.exists(
+            self.yolo_model_name
+        ) & os.path.exists(self.yolo_config_path)
+
         if self.is_yolo_model_exist:
-            self.yolov8 = Yolov8(self.yolo_model_name)
+            self.yolo = Yolo(self.yolo_model_name)
             self.yolo_classes = create_yolo_classes(self.yolo_config_path)
 
     def __call__(self, image: cv2.Mat) -> sv.Detections:
@@ -151,9 +153,9 @@ class UnifiedLanguageModel:
             ]
         )
 
-        # Run YOLOv8
+        # Run YOLO
         if self.is_yolo_model_exist:
-            yolo_detections = self.yolov8(
+            yolo_detections = self.yolo(
                 image,
                 self.yolo_confidence,
             )

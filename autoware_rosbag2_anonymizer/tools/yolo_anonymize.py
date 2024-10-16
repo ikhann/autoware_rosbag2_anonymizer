@@ -8,7 +8,7 @@ from autoware_rosbag2_anonymizer.common import (
     blur_detections,
 )
 
-from autoware_rosbag2_anonymizer.model.yolov8 import Yolov8
+from autoware_rosbag2_anonymizer.model.yolo import Yolo
 from autoware_rosbag2_anonymizer.model.sam import SAM
 
 from autoware_rosbag2_anonymizer.rosbag_io.rosbag_reader import RosbagReader
@@ -21,10 +21,10 @@ def yolo_anonymize(config_data, json_data, device) -> None:
     yolo_confidence = config_data["yolo"]["confidence"]
     yolo_config_path = config_data["yolo"]["config_path"]
 
-    # YOLOv8
-    yolo_model = Yolov8(yolo_model_path)
+    # YOLO
+    yolo_model = Yolo(yolo_model_path)
 
-    # Declare classes for YOLOv8 from yaml file
+    # Declare classes for YOLO from yaml file
     CLASSES = create_yolo_classes(yolo_config_path)
 
     # Segment-Anything

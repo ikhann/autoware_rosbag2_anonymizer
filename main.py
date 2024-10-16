@@ -30,17 +30,17 @@ def parse_arguments():
     parser.add_argument(
         "--yolo_create_dataset",
         action="store_true",
-        help="Create initial dataset in YOLOv8 format with combining Grounding DINO, OpenCLIP and SAM.",
+        help="Create initial dataset in YOLO format with combining Grounding DINO, OpenCLIP and SAM.",
     )
     parser.add_argument(
         "--yolo_train",
         action="store_true",
-        help="Train YOLOv8 with initial dataset",
+        help="Train YOLO with initial dataset",
     )
     parser.add_argument(
         "--yolo_anonymize",
         action="store_true",
-        help="Give a single ROS2 bag file as an input and anonymize bag file with trained YOLOv8 model.",
+        help="Give a single ROS2 bag file as an input and anonymize bag file with trained YOLO model.",
     )
 
     args = parser.parse_args()

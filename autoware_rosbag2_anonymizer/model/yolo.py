@@ -3,7 +3,7 @@ from ultralytics import YOLO
 import supervision as sv
 
 
-class Yolov8:
+class Yolo:
     def __init__(self, model_path: str):
         self.model = YOLO(model_path)
 
