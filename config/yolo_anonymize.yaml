@@ -4,7 +4,7 @@ rosbag:
   output_save_compressed_image: True
   output_storage_id: 'sqlite3' # 'sqlite3' or 'mcap'
 yolo:
-  model: './yolov8x_anonymizer.pt'
+  model: './yolo11x_anonymizer.pt'
   config_path: './yolo_config.yaml'
   confidence: 0.15
 segment_anything:
