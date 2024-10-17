@@ -25,7 +25,7 @@ def yolo_create_dataset(config_data, json_data, device) -> None:
     # Define classes
     DETECTION_CLASSES, CLASSES, CLASS_MAP = create_classes(json_data=json_data)
 
-    unified_language_model = UnifiedLanguageModel(config_data, json_data)
+    unified_language_model = UnifiedLanguageModel(config_data, json_data, device)
 
     # Get ROS2 bag file names
     rosbag2_paths = get_file_paths(

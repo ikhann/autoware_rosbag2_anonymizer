@@ -63,7 +63,7 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
 
-    DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
     with open(args.config, "r") as file:
         config_data = yaml.safe_load(file)

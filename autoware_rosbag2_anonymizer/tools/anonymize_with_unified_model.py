@@ -28,7 +28,7 @@ def anonymize_with_unified_model(config_data, json_data, device) -> None:
     # Segment-Anything-2
     sam2 = SAM2(SAM2_MODEL_CFG, SAM_CHECKPOINT_PATH, device)
 
-    unified_language_model = UnifiedLanguageModel(config_data, json_data)
+    unified_language_model = UnifiedLanguageModel(config_data, json_data, device)
 
     # Get rosbag paths from input folder
     rosbag2_paths = get_file_paths(

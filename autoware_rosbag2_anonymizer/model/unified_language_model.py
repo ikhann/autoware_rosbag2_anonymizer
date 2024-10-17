@@ -22,8 +22,8 @@ from autoware_rosbag2_anonymizer.common import (
 
 
 class UnifiedLanguageModel:
-    def __init__(self, config, json) -> None:
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    def __init__(self, config, json, device) -> None:
+        self.device = device
 
         self.detection_classes, self.classes, self.class_map = create_classes(
             json_data=json
@@ -50,12 +50,14 @@ class UnifiedLanguageModel:
 
         # Grounding DINO
         self.grounding_dino = GroundingDINO(
-            self.grounding_dino_config_path, self.grounding_dino_checkpoint_path
+            self.grounding_dino_config_path,
+            self.grounding_dino_checkpoint_path,
+            self.device,
         )
 
         # Openclip
         self.open_clip = OpenClipModel(
-            self.openclip_model_name, self.openclip_pretrained_model
+            self.openclip_model_name, self.openclip_pretrained_model, self.device
         )
 
         # YOLO

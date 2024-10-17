@@ -2,13 +2,15 @@ from groundingdino.util.inference import Model
 
 
 class GroundingDINO:
-    def __init__(self, config_path, checkpoint_path) -> None:
-        self.model = self.load_model(config_path, checkpoint_path)
+    def __init__(self, config_path, checkpoint_path, device) -> None:
+        self.model = self.load_model(config_path, checkpoint_path, device)
         self.counter = 0
 
-    def load_model(self, config_path, checkpoint_path):
+    def load_model(self, config_path, checkpoint_path, device):
         model = Model(
-            model_config_path=config_path, model_checkpoint_path=checkpoint_path
+            model_config_path=config_path,
+            model_checkpoint_path=checkpoint_path,
+            device=device,
         )
         return model
 
