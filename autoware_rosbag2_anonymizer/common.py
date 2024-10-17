@@ -86,10 +86,16 @@ def bbox_check(xyxy, class_id, detections, iou_threshold, classes, class_map) ->
 
 
 def blur_detections(img, detections, kernel_size, sigma_x):
-    blurred_img = cv2.GaussianBlur(img, (kernel_size, kernel_size), sigma_x)
-    output_img = output = img.copy()
-    for _, mask, _, _, _, _ in detections:
-        output[mask] = blurred_img[mask]
+    output_img = img.copy()
+    for xyxy, mask, _, _, _, _ in detections:
+        x1, y1, x2, y2 = map(int, xyxy)
+        region_to_blur = img[y1:y2, x1:x2]
+        mask_cropped = mask[y1:y2, x1:x2]
+
+        blurred_region = cv2.GaussianBlur(
+            region_to_blur, (kernel_size, kernel_size), sigma_x
+        )
+        output_img[y1:y2, x1:x2][mask_cropped] = blurred_region[mask_cropped]
     return output_img
 
 
@@ -116,16 +122,16 @@ def split_dataset() -> None:
         os.path.join(dataset_path, "valid/images"),
         os.path.join(dataset_path, "valid/labels"),
     )
-    
-    with open(os.path.join(dataset_path, "data.yaml"), 'r') as f:
+
+    with open(os.path.join(dataset_path, "data.yaml"), "r") as f:
         yaml_content = yaml.safe_load(f)
-    
+
     data = {
-        'train': '../train/images',
-        'val': '../valid/images',
-        'test': '../test/images'
+        "train": "../train/images",
+        "val": "../valid/images",
+        "test": "../test/images",
     }
     yaml_content.update(data)
-    
+
     with open(os.path.join(dataset_path, "data.yaml"), "w") as yaml_file:
         yaml.dump(yaml_content, yaml_file, default_flow_style=False)

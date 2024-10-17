@@ -24,4 +24,4 @@ bbox_validation:
   iou_threshold: 0.9
 blur:
   kernel_size: 31
-  sigma_x: 11
+  sigma_x: 19
