@@ -230,6 +230,29 @@ torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0
 This error occurs when the GPU memory is not enough to run the model. You can add the following environment variable to
 avoid this error.
 
+
+### Troubleshooting
+
+<details>
+  <summary><b>Error 1: <code>torch.OutOfMemoryError: CUDA out of memory</code></b></summary>
+
+  ```bash
+  torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 10.87 GiB of which 1010.88 MiB is free. Including non-PyTorch memory, this process has 8.66 GiB memory in use. Of the allocated memory 8.21 GiB is allocated by PyTorch, and 266.44 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation. 
+  See documentation for Memory Management (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+  ```
+
+  This error occurs when the GPU memory is not enough to run the model. You can add the following environment variable to avoid this error.
+
+  ```bash
+  export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+  ```
+</details>
+<details>
+  <summary><b>Error 2: Tool is taking too much time to process</b></summary>
+
+  The tool might take a significant amount of time to process images, due to the computational complexity of combining multiple models (GroundingDINO, OpenCLIP, YOLO, SegmentAnything).
+</details>
+
 ### Citation
 
 ```bibtex
