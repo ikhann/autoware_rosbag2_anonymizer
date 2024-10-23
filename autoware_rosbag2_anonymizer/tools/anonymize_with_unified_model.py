@@ -90,7 +90,7 @@ def anonymize_with_unified_model(config_data, json_data, device) -> None:
                         json_data=json_data
                     )
 
-                    bounding_box_annotator = sv.BoundingBoxAnnotator()
+                    bounding_box_annotator = sv.BoxAnnotator()
                     annotated_image = bounding_box_annotator.annotate(
                         scene=output,
                         detections=detections,

@@ -73,7 +73,7 @@ def yolo_anonymize(config_data, json_data, device) -> None:
 
             # Show debug image
             if config_data["debug"]["show_on_image"]:
-                bounding_box_annotator = sv.BoundingBoxAnnotator()
+                bounding_box_annotator = sv.BoxAnnotator()
                 annotated_image = bounding_box_annotator.annotate(
                     scene=output,
                     detections=detections,

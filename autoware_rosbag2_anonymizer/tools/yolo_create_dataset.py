@@ -97,7 +97,7 @@ def yolo_create_dataset(config_data, json_data, device) -> None:
                     json_data=json_data
                 )
 
-                bounding_box_annotator = sv.BoundingBoxAnnotator()
+                bounding_box_annotator = sv.BoxAnnotator()
                 annotated_image = bounding_box_annotator.annotate(
                     scene=image,
                     detections=detections,
