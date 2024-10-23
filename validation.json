@@ -2,7 +2,7 @@
     "prompts": [
         {
             "prompt": "license plate",
-            "should_inside": ["car", "bus", "truck", "minibus", "motorcycle", "trailer", "utility vehicle", "tractor", "golf cart", "sem,-truck", "moped", "scooter"],
+            "should_inside": ["car", "bus", "truck", "minibus", "motorcycle", "trailer", "utility vehicle", "tractor", "golf cart", "semi-truck", "moped", "scooter"],
             "should_not_inside": []
         },
         {
