@@ -3,11 +3,10 @@
 A tool to anonymize images in ros2 bags. The tool combines GroundingDINO, OpenCLIP, SegmentAnything2 and YOLO to anonymize images in rosbags
 
 <p align="center">
-    <img src="docs/rosbag2_anonymizer.png" alt="system" height="387px"/>
-  <img src="docs/validation.png" alt="system" height="387px"/>
+    <img src="docs/anonymizer.gif" alt="system" height="310px"/>
 </p>
 
-
+---
 
 ### Installation
 
