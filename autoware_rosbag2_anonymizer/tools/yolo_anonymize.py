@@ -38,6 +38,7 @@ def yolo_anonymize(config_data, json_data, device) -> None:
         config_data["rosbag"]["output_bag_path"],
         config_data["rosbag"]["output_save_compressed_image"],
         config_data["rosbag"]["output_storage_id"],
+        reader.get_qos_profile_map(),
     )
 
     for i, (msg, is_image) in enumerate(reader):

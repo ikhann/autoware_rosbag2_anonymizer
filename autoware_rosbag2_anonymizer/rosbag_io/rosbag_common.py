@@ -42,7 +42,13 @@ def wait_for(
         return True
 
 
-def create_topic(writer, topic_name, topic_type, serialization_format="cdr"):
+def create_topic(
+    writer,
+    topic_name,
+    topic_type,
+    serialization_format="cdr",
+    offered_qos_profiles_map="",
+):
     """
     Create a new topic.
 
@@ -50,11 +56,15 @@ def create_topic(writer, topic_name, topic_type, serialization_format="cdr"):
     :param topic_name:
     :param topic_type:
     :param serialization_format:
+    :param offered_qos_profiles_map:
     :return:
     """
     topic_name = topic_name
     topic = rosbag2_py.TopicMetadata(
-        name=topic_name, type=topic_type, serialization_format=serialization_format
+        name=topic_name,
+        type=topic_type,
+        serialization_format=serialization_format,
+        offered_qos_profiles=offered_qos_profiles_map,
     )
 
     writer.create_topic(topic)

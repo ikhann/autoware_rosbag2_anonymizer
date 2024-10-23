@@ -24,6 +24,7 @@ class RosbagReader:
         self.reader.open(storage_options, converter_options)
 
         self.type_map = self.create_type_map()
+        self.qos_profile_map = self.crate_qos_profile_map()
 
         self.subsample_coefficient = subsample_coefficient
         self.subsample_dict = {}
@@ -92,6 +93,15 @@ class RosbagReader:
         return {
             topic_types[i].name: topic_types[i].type for i in range(len(topic_types))
         }
+        
+    def crate_qos_profile_map(self):
+        topic_types = self.reader.get_all_topics_and_types()
+        return {
+            topic_types[i].name: topic_types[i].offered_qos_profiles for i in range(len(topic_types))
+        }
 
     def get_type_map(self):
         return self.type_map
+    
+    def get_qos_profile_map(self):
+        return self.qos_profile_map

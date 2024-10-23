@@ -44,6 +44,7 @@ def anonymize_with_unified_model(config_data, json_data, device) -> None:
             os.path.join(config_data["rosbag"]["output_bags_folder"], rosbag2_path.split("/")[-1].split(".")[0]),
             config_data["rosbag"]["output_save_compressed_image"],
             config_data["rosbag"]["output_storage_id"],
+            reader.get_qos_profile_map(),
         )
 
         for i, (msg, is_image) in enumerate(reader):

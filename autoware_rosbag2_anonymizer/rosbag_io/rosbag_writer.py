@@ -4,13 +4,23 @@ from rclpy.serialization import serialize_message
 from cv_bridge import CvBridge
 import cv2 as cv
 
-from autoware_rosbag2_anonymizer.rosbag_io.rosbag_common import get_rosbag_options, create_topic
+from autoware_rosbag2_anonymizer.rosbag_io.rosbag_common import (
+    get_rosbag_options,
+    create_topic,
+)
 
 
 class RosbagWriter:
-    def __init__(self, bag_path: str, write_compressed: bool, storage_id: str) -> None:
+    def __init__(
+        self,
+        bag_path: str,
+        write_compressed: bool,
+        storage_id: str,
+        offered_qos_profiles_map: dict,
+    ) -> None:
         self.bag_path = bag_path
         self.write_compressed = write_compressed
+        self.offered_qos_profiles_map = offered_qos_profiles_map
 
         self.storage_id = storage_id
 
@@ -37,6 +47,8 @@ class RosbagWriter:
                     if not self.write_compressed
                     else "sensor_msgs/msg/CompressedImage"
                 ),
+                "cdr",
+                self.offered_qos_profiles_map[topic_name],
             )
             self.type_map[topic_name] = (
                 "sensor_msgs/msg/Image"
@@ -53,6 +65,12 @@ class RosbagWriter:
 
     def write_any(self, msg, msg_type, topic_name, timestamp):
         if topic_name not in self.type_map:
-            create_topic(self.writer, topic_name, msg_type)
+            create_topic(
+                self.writer,
+                topic_name,
+                msg_type,
+                "cdr",
+                self.offered_qos_profiles_map[topic_name],
+            )
 
         self.writer.write(topic_name, serialize_message(msg), timestamp)
