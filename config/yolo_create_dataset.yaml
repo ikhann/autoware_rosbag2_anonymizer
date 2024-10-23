@@ -9,9 +9,6 @@ grounding_dino:
   box_threshold: 0.1
   text_threshold: 0.1
   nms_threshold: 0.1
-segment_anything:
-  encoder_version: 'vit_h'
-  checkpoint_path: './sam_vit_h_4b8939.pth'
 openclip:
   model_name: 'ViT-B-32'
   pretrained_model: 'laion2b_s34b_b79k'
