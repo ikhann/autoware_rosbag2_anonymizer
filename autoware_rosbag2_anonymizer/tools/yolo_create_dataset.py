@@ -4,6 +4,8 @@ import yaml
 import cv2
 import cv_bridge
 
+import supervision as sv
+
 from supervision.dataset.formats.yolo import (
     detections_to_yolo_annotations,
     save_text_file,
@@ -62,13 +64,6 @@ def yolo_create_dataset(config_data, json_data, device) -> None:
             # Find bounding boxes with Unified Model
             detections = unified_language_model(image)
 
-            # Print detections: how many objects are detected in each class
-            print("\nDetections:")
-            for class_id in range(len(unified_language_model.detection_classes)):
-                print(
-                    f"{unified_language_model.detection_classes[class_id]}: {len([d for d in detections if d[3] == class_id])}"
-                )
-
             cv2.imwrite(
                 filename=f"{IMAGES_DIRECTORY_PATH}/image{IMAGE_COUNTER}.jpg",
                 img=image,
@@ -88,20 +83,41 @@ def yolo_create_dataset(config_data, json_data, device) -> None:
 
             IMAGE_COUNTER += 1
 
-            # box_annotator = sv.BoxAnnotator()
-            # labels = [
-            #     f"{DETECTION_CLASSES[class_id]} {confidence:0.2f}"
-            #     for _, _, confidence, class_id, _, _ in detections
-            # ]
-            # annotated_image = box_annotator.annotate(
-            #     scene=image, detections=detections, labels=labels
-            # )
+            # Print detections: how many objects are detected in each class
+            if config_data["debug"]["print_on_terminal"]:
+                print("\nDetections:")
+                for class_id in range(len(CLASSES)):
+                    print(
+                        f"{CLASSES[class_id]}: {len([d for d in detections if d[3] == class_id])}"
+                    )
 
-            # height, width = image.shape[:2]
-            # image = cv2.resize(image, (width // 2, height // 2))
+            # Show debug image
+            if config_data["debug"]["show_on_image"]:
+                DETECTION_CLASSES, CLASSES, CLASS_MAP = create_classes(
+                    json_data=json_data
+                )
 
-            # cv2.imshow("debug", image)
-            # cv2.waitKey(1)
+                bounding_box_annotator = sv.BoundingBoxAnnotator()
+                annotated_image = bounding_box_annotator.annotate(
+                    scene=image,
+                    detections=detections,
+                )
+
+                labels = [
+                    f"{DETECTION_CLASSES[class_id]} {confidence:0.2f}"
+                    for _, _, confidence, class_id, _, _ in detections
+                ]
+                label_annotator = sv.LabelAnnotator()
+                annotated_image = label_annotator.annotate(
+                    image,
+                    detections,
+                    labels,
+                )
+
+                height, width = image.shape[:2]
+                annotated_image = cv2.resize(annotated_image, (width // 2, height // 2))
+                cv2.imshow("anonymizer debug", annotated_image)
+                cv2.waitKey(1)
 
     data = {"names": DETECTION_CLASSES, "nc": len(DETECTION_CLASSES)}
     with open(DATA_YAML_PATH, "w") as yaml_file:

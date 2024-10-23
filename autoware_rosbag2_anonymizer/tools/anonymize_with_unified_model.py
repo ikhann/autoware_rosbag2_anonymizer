@@ -41,7 +41,10 @@ def anonymize_with_unified_model(config_data, json_data, device) -> None:
     for rosbag2_path in rosbag2_paths:
         reader = RosbagReader(rosbag2_path, 1)
         writer = RosbagWriter(
-            os.path.join(config_data["rosbag"]["output_bags_folder"], rosbag2_path.split("/")[-1].split(".")[0]),
+            os.path.join(
+                config_data["rosbag"]["output_bags_folder"],
+                rosbag2_path.split("/")[-1].split(".")[0],
+            ),
             config_data["rosbag"]["output_save_compressed_image"],
             config_data["rosbag"]["output_storage_id"],
             reader.get_qos_profile_map(),
@@ -68,38 +71,45 @@ def anonymize_with_unified_model(config_data, json_data, device) -> None:
                     config_data["blur"]["sigma_x"],
                 )
 
-                # Print detections: how many objects are detected in each class
-                print("\nDetections:")
-                for class_id in range(len(unified_language_model.detection_classes)):
-                    print(
-                        f"{unified_language_model.detection_classes[class_id]}: {len([d for d in detections if d[3] == class_id])}"
-                    )
-
                 # Write blured image to rosbag
                 writer.write_image(output, msg.topic, msg.timestamp)
 
-                # Debug ------------------
-                # DETECTION_CLASSES, CLASSES, CLASS_MAP = create_classes(json_data=json_data)
+                # Print detections: how many objects are detected in each class
+                if config_data["debug"]["print_on_terminal"]:
+                    print("\nDetections:")
+                    for class_id in range(
+                        len(unified_language_model.detection_classes)
+                    ):
+                        print(
+                            f"{unified_language_model.detection_classes[class_id]}: {len([d for d in detections if d[3] == class_id])}"
+                        )
 
-                # bounding_box_annotator = sv.BoundingBoxAnnotator()
-                # annotated_image = bounding_box_annotator.annotate(
-                #     scene=output,
-                #     detections=detections,
-                # )
+                # Show debug image
+                if config_data["debug"]["show_on_image"]:
+                    DETECTION_CLASSES, CLASSES, CLASS_MAP = create_classes(
+                        json_data=json_data
+                    )
 
-                # labels = [
-                #     f"{DETECTION_CLASSES[class_id]} {confidence:0.2f}"
-                #     for _, _, confidence, class_id, _, _ in detections
-                # ]
-                # label_annotator = sv.LabelAnnotator()
-                # annotated_image = label_annotator.annotate(
-                #     output,
-                #     detections,
-                #     labels,
-                # )
+                    bounding_box_annotator = sv.BoundingBoxAnnotator()
+                    annotated_image = bounding_box_annotator.annotate(
+                        scene=output,
+                        detections=detections,
+                    )
 
-                # height, width = image.shape[:2]
-                # annotated_image = cv2.resize(annotated_image, (width // 2, height // 2))
-                # cv2.imshow("test", annotated_image)
-                # cv2.waitKey(1)
-                # Debug ------------------
+                    labels = [
+                        f"{DETECTION_CLASSES[class_id]} {confidence:0.2f}"
+                        for _, _, confidence, class_id, _, _ in detections
+                    ]
+                    label_annotator = sv.LabelAnnotator()
+                    annotated_image = label_annotator.annotate(
+                        output,
+                        detections,
+                        labels,
+                    )
+
+                    height, width = image.shape[:2]
+                    annotated_image = cv2.resize(
+                        annotated_image, (width // 2, height // 2)
+                    )
+                    cv2.imshow("anonymizer debug", annotated_image)
+                    cv2.waitKey(1)

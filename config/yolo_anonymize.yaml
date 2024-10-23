@@ -13,3 +13,6 @@ segment_anything_2:
 blur:
   kernel_size: 31
   sigma_x: 9
+debug:
+  show_on_image: False
+  print_on_terminal: False

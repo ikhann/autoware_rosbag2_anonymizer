@@ -59,30 +59,38 @@ def yolo_anonymize(config_data, json_data, device) -> None:
                 config_data["blur"]["kernel_size"],
                 config_data["blur"]["sigma_x"],
             )
-            
+
             # Write blured image to rosbag
             writer.write_image(output, msg.topic, msg.timestamp)
 
-            # Debug ------------------
-            # bounding_box_annotator = sv.BoundingBoxAnnotator()
-            # annotated_image = bounding_box_annotator.annotate(
-            #     scene=output,
-            #     detections=detections,
-            # )
+            # Print detections: how many objects are detected in each class
+            if config_data["debug"]["print_on_terminal"]:
+                print("\nDetections:")
+                for class_id in range(len(CLASSES)):
+                    print(
+                        f"{CLASSES[class_id]}: {len([d for d in detections if d[3] == class_id])}"
+                    )
 
-            # labels = [
-            #     f"{CLASSES[class_id]} {confidence:0.2f}"
-            #     for _, _, confidence, class_id, _, _ in detections
-            # ]
-            # label_annotator = sv.LabelAnnotator()
-            # annotated_image = label_annotator.annotate(
-            #     output,
-            #     detections,
-            #     labels,
-            # )
+            # Show debug image
+            if config_data["debug"]["show_on_image"]:
+                bounding_box_annotator = sv.BoundingBoxAnnotator()
+                annotated_image = bounding_box_annotator.annotate(
+                    scene=output,
+                    detections=detections,
+                )
 
-            # height, width = image.shape[:2]
-            # annotated_image = cv2.resize(annotated_image, (width // 2, height // 2))
-            # cv2.imshow("test", annotated_image)
-            # cv2.waitKey(1)
-            # Debug ------------------
+                labels = [
+                    f"{CLASSES[class_id]} {confidence:0.2f}"
+                    for _, _, confidence, class_id, _, _ in detections
+                ]
+                label_annotator = sv.LabelAnnotator()
+                annotated_image = label_annotator.annotate(
+                    output,
+                    detections,
+                    labels,
+                )
+
+                height, width = image.shape[:2]
+                annotated_image = cv2.resize(annotated_image, (width // 2, height // 2))
+                cv2.imshow("test", annotated_image)
+                cv2.waitKey(1)
