@@ -1,3 +1,5 @@
+## autoware_rosbag2_anonymizer
+
 ### Introduction
 
 A tool to anonymize images in ros2 bags. The tool combines GroundingDINO, OpenCLIP, SegmentAnything2 and YOLO to anonymize images in rosbags
@@ -6,18 +8,36 @@ A tool to anonymize images in ros2 bags. The tool combines GroundingDINO, OpenCL
     <img src="docs/anonymizer.gif" alt="system" height="310px"/>
 </p>
 
+- [autoware\_rosbag2\_anonymizer](#autoware_rosbag2_anonymizer)
+  - [Introduction](#introduction)
+  - [Installation](#installation)
+    - [Clone the repository](#clone-the-repository)
+    - [Download the pretrained weights](#download-the-pretrained-weights)
+    - [Install ros2 mcap dependencies if you will use mcap files](#install-ros2-mcap-dependencies-if-you-will-use-mcap-files)
+    - [Install `autoware_rosbag2_anonymizer` package](#install-autoware_rosbag2_anonymizer-package)
+  - [Usage](#usage)
+    - [Anonymize with Unified Model](#anonymize-with-unified-model)
+    - [Train Your Own YOLO Model](#train-your-own-yolo-model)
+  - [Configuration](#configuration)
+    - [`config/anonymize_with_unified_model.yaml`](#configanonymize_with_unified_modelyaml)
+    - [`config/yolo_create_dataset.yaml`](#configyolo_create_datasetyaml)
+    - [`config/yolo_train.yaml`](#configyolo_trainyaml)
+    - [`config/yolo_anonymize.yaml`](#configyolo_anonymizeyaml)
+  - [Troubleshooting](#troubleshooting)
+  - [Citation](#citation)
+
 ---
 
 ### Installation
 
-**Clone the repository**
+#### Clone the repository
 
 ``` shell
 git clone https://github.com/autowarefoundation/autoware_rosbag2_anonymizer.git
 cd autoware_rosbag2_anonymizer
 ```
 
-**Download the pretrained weights**
+#### Download the pretrained weights
 
 ``` shell
 wget https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_small.pt
@@ -29,13 +49,13 @@ wget https://github.com/autowarefoundation/autoware_rosbag2_anonymizer/releases/
 wget https://github.com/autowarefoundation/autoware_rosbag2_anonymizer/releases/download/v1.0.0/yolo_config.yaml
 ```
 
-**Install ros2 mcap dependencies if you will use mcap files**
+#### Install ros2 mcap dependencies if you will use mcap files
 
 ``` shell
 sudo apt install ros-humble-rosbag2-storage-mcap
 ```
 
-**Install `autoware_rosbag2_anonymizer` package**
+#### Install `autoware_rosbag2_anonymizer` package
 
 Before installing the tool, you should update the pip package manager.
 
@@ -46,6 +66,32 @@ python3 -m pip install pip -U
 ``` shell
 python3 -m pip install .
 ```
+
+### Usage
+
+The tool provides two options to anonymize images in rosbags. You can directly anonymize your
+ROS2 bag file with option 1 or you can train your own YOLO model with option 2 to improve the results.
+
+- If your ROS 2 bag file includes custom message types from Autoware or any other packages, you should source the their workspaces before running the tool.
+  - `source /path/to/your/workspace/install/setup.bash`
+
+#### Anonymize with Unified Model
+
+You should provide the path to the forlder which contains ROS 2 bag files and the output folder to save anonymized bag files. The model is a combination of GroundingDINO, OpenCLIP, YOLO and
+SegmentAnything anonymize images in rosbags. If you don't want to use pre-trained YOLO model,
+you can follow the instructions in the second option to train your own YOLO model.
+
+You should set your configuration in `config/anonymize_with_unified_model.yaml` file.
+
+``` shell
+python3 main.py config/anonymize_with_unified_model.yaml --anonymize_with_unified_model
+```
+
+#### Train Your Own YOLO Model
+
+To improve the results, you can train your own YOLO model with the dataset created by the unified model.
+
+Check the documentation to see the detailed instructions. [Train Your Own YOLO Model](docs/train-your-own-yolo-model.md)
 
 ### Configuration
 
@@ -72,7 +118,7 @@ You can add your prompts as dictionaries under the `prompts` key. Each dictionar
 You should set your configuration in the configuration files under `config` folder according to the usage.
 Following instructions will guide you to set each configuration file.
 
-**`config/anonymize_with_unified_model.yaml`**
+#### `config/anonymize_with_unified_model.yaml`
 
 ```yaml
 rosbag:
@@ -100,7 +146,7 @@ blur:
   sigma_x: 11 # Sigma x for the Gaussian blur (int)
 ```
 
-**`config/yolo_create_dataset.yaml`**
+#### `config/yolo_create_dataset.yaml`
 
 ```yaml
 rosbag:
@@ -122,7 +168,7 @@ bbox_validation:
   iou_threshold: 0.9 # Threshold for the intersection over union (float), if the intersection over union is greater than this threshold, the object will be selected as inside the validation prompt
 ```
 
-**`config/yolo_train.yaml`**
+#### `config/yolo_train.yaml`
 
 ```yaml
 dataset:
@@ -133,7 +179,7 @@ yolo:
   model: 'yolo11x.pt' # Select the base model for YOLO ('yolo11x.pt' 'yolo11l.pt', 'yolo11m.pt', 'yolo11s.pt', 'yolo11n.pt)
 ```
 
-**`config/yolo_anonymize.yaml`**
+#### `config/yolo_anonymize.yaml`
 
 ```yaml
 rosbag:
@@ -150,73 +196,6 @@ yolo:
 blur:
   kernel_size: 31 # Kernel size for the Gaussian blur (int)
   sigma_x: 11 # Sigma x for the Gaussian blur (int)
-```
-
-### Usage
-
-The tool provides two options to anonymize images in rosbags.
-
-> :warning: If your ROS 2 bag file includes custom message types from Autoware or any other packages, you should source the their workspaces before running the tool.
-
-```bash
-source /path/to/your/workspace/install/setup.bash
-```
-
-**Option 1: Anonymize with Unified Model**
-
-You should provide a single rosbag and tool anonymize images in rosbag with a unified model.
-The model is a combination of GroundingDINO, OpenCLIP, YOLO and SegmentAnything.
-If you don't want to use pre-trained YOLO model, you can follow the instructions in the second option to train your 
-own YOLO model.
-
-You should set your configuration in `config/anonymize_with_unified_model.yaml` file.
-
-``` shell
-python3 main.py config/anonymize_with_unified_model.yaml --anonymize_with_unified_model
-```
-
-**Option 2: Anonymize Using the YOLO Model Trained on a Dataset Created with the Unified Model**
-
-<ins>Step 1:</ins> Create an initial dataset with the unified model.
-You can provide multiple rosbags to create a dataset.
-You should set your configuration in `config/yolo_create_dataset.yaml` file.
-After running the following command, the tool will create a dataset in YOLO format.
-
-``` shell
-python3 main.py config/yolo_create_dataset.yaml --yolo_create_dataset
-```
-
-<ins>Step 2:</ins> The dataset which is created in the first step has some missing labels.
-You should label the missing labels manually. You can use the following example tools to label the missing labels:
-
-- [label-studio](https://github.com/HumanSignal/label-studio)
-- [Roboflow](https://roboflow.com/) (You can use the free version)
-
-<ins>Step 3:</ins> After labeling the missing labels, you should split the dataset into train and validation sets.
-If the labeling tool you used does not provide a split option, you can use the following command to split the dataset.
-
-Give the path to the dataset folder which is created in the first step.
-
-``` shell
-autoware-rosbag2-anonymizer-split-dataset /path/to/dataset
-```
-
-<ins>Step 4:</ins> Train the YOLO model with the dataset.
-You should set your configuration in `config/yolo_train.yaml` file.
-
-``` shell
-python3 main.py config/yolo_train.yaml --yolo_train
-```
-
-<ins>Step 5:</ins> Anonymize images in rosbags with the trained YOLO model.
-You should set your configuration in `config/yolo_anonymize.yaml` file. 
-If you want to anonymize your ROS2 bag file with only YOLO model,
-you should use following command.
-But we recommend to use the unified model for better results.
-You can follow the `Option 1` for the unified model with the YOLO model trained by you.
-
-``` shell
-python3 main.py config/yolo_anonymize.yaml --yolo_anonymize
 ```
 
 ### Troubleshooting
