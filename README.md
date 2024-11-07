@@ -18,11 +18,13 @@ A tool to anonymize images in ros2 bags. The tool combines GroundingDINO, OpenCL
   - [Usage](#usage)
     - [Anonymize with Unified Model](#anonymize-with-unified-model)
     - [Train Your Own YOLO Model](#train-your-own-yolo-model)
+    - [Validate the Tool](#validate-the-tool)
   - [Configuration](#configuration)
     - [`config/anonymize_with_unified_model.yaml`](#configanonymize_with_unified_modelyaml)
     - [`config/yolo_create_dataset.yaml`](#configyolo_create_datasetyaml)
     - [`config/yolo_train.yaml`](#configyolo_trainyaml)
     - [`config/yolo_anonymize.yaml`](#configyolo_anonymizeyaml)
+    - [`config/validation.yaml`](#configvalidationyaml)
   - [Troubleshooting](#troubleshooting)
   - [Citation](#citation)
 
@@ -93,9 +95,23 @@ To improve the results, you can train your own YOLO model with the dataset creat
 
 Check the documentation to see the detailed instructions. [Train Your Own YOLO Model](docs/train-your-own-yolo-model.md)
 
+#### Validate the Tool
+
+You can validate the tool with YOLO format dataset. Validation process will calculate precision, recall and mAP scores for the dataset.
+
+You should set your configuration in `config/validation.yaml` file.
+
+``` shell
+python3 main.py config/validation.yaml --validation
+```
+
+Code will output the precision, recall and mAP scores for the dataset. Also it will save the results in the `validation_results.txt` folder.
+
+For detailed information about the validation process, you can check the [Validation Documentation](docs/validation.md).
+
 ### Configuration
 
-Define prompts in the `validation.json`file. The tool will use these prompts to detect objects.
+Define prompts in the `validation.json` file. The tool will use these prompts to detect objects.
 You can add your prompts as dictionaries under the `prompts` key. Each dictionary should have two keys:
 - `prompt`: The prompt that will be used to detect the object. This prompt will be blurred in the anonymization process.
 - `should_inside`: This is a list of prompts that object should be inside. If the object is not inside the prompts, the tool will not blur the object.
@@ -196,6 +212,25 @@ yolo:
 blur:
   kernel_size: 31 # Kernel size for the Gaussian blur (int)
   sigma_x: 11 # Sigma x for the Gaussian blur (int)
+```
+
+#### `config/validation.yaml`
+
+```yaml
+dataset:
+  input_dataset_yaml: "path/to/data.yaml" # Path to the config file of the dataset, which is created in the previous step
+  max_samples: -1 # Maximum number of samples to use for validation (int), if -1, all samples will be used
+
+  grounding_dino:
+  box_threshold: 0.1 # Threshold for the bounding box (float)
+  text_threshold: 0.1 # Threshold for the text (float)
+  nms_threshold: 0.1 # Threshold for the non-maximum suppression (float)
+
+open_clip:
+  score_threshold: 0.7 # Validity threshold for the OpenCLIP model (float
+
+bbox_validation:
+  iou_threshold: 0.9 # Threshold for the intersection over union (float), if the intersection over union is greater than this threshold, the object will be selected as inside the validation prompt
 ```
 
 ### Troubleshooting

@@ -16,6 +16,9 @@ from autoware_rosbag2_anonymizer.tools.yolo_train import (
 from autoware_rosbag2_anonymizer.tools.yolo_anonymize import (
     yolo_anonymize,
 )
+from autoware_rosbag2_anonymizer.tools.validator import (
+    Validator,
+)
 
 
 def parse_arguments():
@@ -42,6 +45,11 @@ def parse_arguments():
         action="store_true",
         help="Give a single ROS2 bag file as an input and anonymize bag file with trained YOLO model.",
     )
+    parser.add_argument(
+        "--validation",
+        action="store_true",
+        help="Validate the dataset using the Unified Model.",
+    )
 
     args = parser.parse_args()
 
@@ -51,6 +59,7 @@ def parse_arguments():
             args.yolo_create_dataset,
             args.yolo_train,
             args.yolo_anonymize,
+            args.validation,
         ]
     ):
         parser.error(
@@ -93,3 +102,10 @@ if __name__ == "__main__":
             json_data=json_data,
             device=DEVICE,
         )
+    elif args.validation:
+        validator = Validator(
+            config_data,
+            json_data,
+            DEVICE,
+        )
+        validator.validate_dataset()

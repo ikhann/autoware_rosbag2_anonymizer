@@ -1,0 +1,19 @@
+dataset:
+  input_dataset_yaml: "path/to/data.yaml"
+  max_samples: -1 # -1 for all samples in the dataset
+grounding_dino:
+  config_path: "./GroundingDINO_SwinB.cfg.py"
+  checkpoint_path: "./groundingdino_swinb_cogcoor.pth"
+  box_threshold: 0.1
+  text_threshold: 0.1
+  nms_threshold: 0.1
+openclip:
+  model_name: "ViT-B-32"
+  pretrained_model: "laion2b_s34b_b79k"
+  score_threshold: 0.7
+yolo:
+  model: "./yolo11x_anonymizer.pt"
+  config_path: "./yolo_config.yaml"
+  confidence: 0.15
+bbox_validation:
+  iou_threshold: 0.9
