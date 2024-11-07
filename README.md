@@ -248,11 +248,15 @@ bbox_validation:
   ```bash
   export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
   ```
+
+  You can also check the [Time and Requirement Analysis](docs/time_and_requirent_analysis.md) document to see the VRAM requirements for each model.
 </details>
 <details>
   <summary><b>Error 2: Tool is taking too much time to process</b></summary>
 
   The tool might take a significant amount of time to process images, due to the computational complexity of combining multiple models (GroundingDINO, OpenCLIP, YOLO, SegmentAnything).
+
+  You can check the [Time and Requirement Analysis](docs/time_and_requirent_analysis.md) document to see the time requirements for each model.
 </details>
 
 ### Citation
