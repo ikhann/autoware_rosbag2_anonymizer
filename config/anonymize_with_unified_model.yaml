@@ -1,6 +1,6 @@
 rosbag:
-  input_bags_folder: '/path/to/input_bag_folder'
-  output_bags_folder: '/path/to/output_folder'
+  input_bags_folder: '/home/daniil/repos/hackaton_ws/random'
+  output_bags_folder: '/home/daniil/repos/hackaton_ws/output_folder'
   output_save_compressed_image: True
   output_storage_id: 'mcap' # 'sqlite3' or 'mcap'
 grounding_dino:
@@ -26,5 +26,8 @@ blur:
   kernel_size: 31
   sigma_x: 19
 debug:
-  show_on_image: False
-  print_on_terminal: False
+  show_on_image: True
+  print_on_terminal: True
+ros:
+  input_image_topic: "/camera/camera/color/image_raw"
+  input_camera_info_topic: "/camera/camera/color/camera_info"
